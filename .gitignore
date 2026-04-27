@@ -1,0 +1,18 @@
+# Environment variables - NEVER push this
+.env
+
+# Node
+node_modules/
+api/node_modules/
+
+# Prisma
+api/prisma/migrations/*.sql
+
+# Python
+__pycache__/
+*.pyc
+face-service/__pycache__/
+
+# OS
+.DS_Store
+Thumbs.db
