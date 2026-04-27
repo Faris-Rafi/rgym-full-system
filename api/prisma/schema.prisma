@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Member {
+  id               Int           @id @default(autoincrement())
+  name             String
+  email            String        @unique
+  phone            String?
+  passwordHash     String
+  faceImagePath    String?
+  isActive         Boolean       @default(true)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  membership       Membership?
+  checkins         Checkin[]
+  workouts         Workout[]
+  payments         Payment[]
+}
+
+model Membership {
+  id               Int           @id @default(autoincrement())
+  memberId         Int           @unique
+  plan             String        // e.g. "monthly", "quarterly", "yearly"
+  startDate        DateTime
+  endDate          DateTime
+  isActive         Boolean       @default(true)
+  createdAt        DateTime      @default(now())
+
+  member           Member        @relation(fields: [memberId], references: [id])
+}
+
+model Checkin {
+  id               Int           @id @default(autoincrement())
+  memberId         Int
+  type             String        // "entry" or "exit"
+  timestamp        DateTime      @default(now())
+  method           String        @default("face") // "face" or "manual"
+
+  member           Member        @relation(fields: [memberId], references: [id])
+}
+
+model Workout {
+  id               Int           @id @default(autoincrement())
+  memberId         Int
+  date             DateTime      @default(now())
+  notes            String?
+  exercises        Json          // [{ name, sets, reps, weight }]
+
+  member           Member        @relation(fields: [memberId], references: [id])
+}
+
+model Payment {
+  id               Int           @id @default(autoincrement())
+  memberId         Int
+  amount           Float
+  status           String        // "pending", "success", "failed"
+  method           String?       // "cash", "transfer", etc.
+  paidAt           DateTime?
+  createdAt        DateTime      @default(now())
+
+  member           Member        @relation(fields: [memberId], references: [id])
+}
