@@ -1,5 +1,5 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const prisma = require("../prisma");
 
@@ -79,12 +79,10 @@ router.post("/login", async (req, res) => {
 });
 
 // Get current member
-router.get("/me", async (req, res) => {
-  const memberId = req.member.id;
-
+router.get("/me", require("../middleware/auth"), async (req, res) => {
   try {
     const currentMember = await prisma.member.findUnique({
-      where: { id: memberId },
+      where: { id: req.member.id },
       select: {
         id: true,
         name: true,

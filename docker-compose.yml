@@ -39,3 +39,4 @@ services:
 
 volumes:
   postgres_data:
+  api_node_modules:
