@@ -12,6 +12,7 @@ app.use(express.json());
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/members", require("./routes/members"));
 app.use("/api/checkins", require("./routes/checkins"));
+app.use("/api/workouts", require("./routes/workouts"));
 
 app.get("/", (req, res) => {
   res.json({ message: "R-Gym API is running 🏋️" });
